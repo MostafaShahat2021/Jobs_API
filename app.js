@@ -1,8 +1,12 @@
 require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
+const connectDB = require("./db/connect")
+const MONGODB_URI = process.env.MONGODB_URI
+const PORT = process.env.PORT || 3000
+
 const app = express();
-// connect DB
+
 
 // Routers
 const authRouter = require("./routes/auth")
@@ -28,14 +32,7 @@ app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 3000;
 
-const start = async () => {
-  try {
-    app.listen(port, () =>
-      console.log(`Server is listening on port ${port}...`)
-    );
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-start();
+// connect DB
+connectDB(MONGODB_URI).then(() => {
+  app.listen(PORT, () => console.log(`Server running on PORT: ${PORT}`))
+}).catch(err => console.log(err.message))
