@@ -40,7 +40,7 @@ UserSchema.pre("save", async function (){
 // Method to create a JSON Web Token (JWT) for the user
 UserSchema.methods.createJWT = function () {
   // Sign a new JWT with the user's ID and name, using a secret key and setting an expiration time of 30 days
-  return jwt.sign({ userId: this._id, name: this.name }, "JWTsecret", { expiresIn: "30d" })
+  return jwt.sign({ userId: this._id, name: this.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME })
 }
 
 module.exports = mongoose.model('User', UserSchema);
