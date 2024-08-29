@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema(
 );
 
 // Middleware to hash the user's password before saving it to the database
-UserSchema.pre("save", async function (){
+UserSchema.pre("save", async function () {
   // Generate a salt with a cost factor of 10
   const salt = await bcrypt.genSalt(10)
   // Hash the user's password with the generated salt
@@ -41,6 +41,12 @@ UserSchema.pre("save", async function (){
 UserSchema.methods.createJWT = function () {
   // Sign a new JWT with the user's ID and name, using a secret key and setting an expiration time of 30 days
   return jwt.sign({ userId: this._id, name: this.name }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_LIFETIME })
+}
+
+// Compare the candidate password with the stored password hash
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password)
+  return isMatch
 }
 
 module.exports = mongoose.model('User', UserSchema);
