@@ -4,6 +4,7 @@ const express = require('express');
 const connectDB = require("./db/connect")
 const MONGODB_URI = process.env.MONGODB_URI
 const PORT = process.env.PORT || 3000
+const authenticateUser = require("./middleware/authentication")
 
 const app = express();
 
@@ -25,7 +26,7 @@ app.get('/', (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter)
-app.use("/api/v1/jobs", jobshRouter)
+app.use("/api/v1/jobs", authenticateUser, jobshRouter)
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
